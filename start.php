@@ -17,8 +17,14 @@ elgg_register_event_handler('pagesetup', 'system', __NAMESPACE__ . '\\stripe_pag
 function stripe_init() {
 
 	// Register Stripe js
-	elgg_register_js('stripe.js', 'https://js.stripe.com/v2/', 'head', 50);
-	elgg_load_js('stripe.js');
+	//elgg_register_js('stripe.js', 'https://js.stripe.com/v2/', 'head', 50);
+	//elgg_load_js('stripe.js');
+
+    elgg_define_js('stripe', [
+    //'deps' => ['jquery'],
+    'src' => 'https://js.stripe.com/v2/stripe.js',
+    ]);
+    elgg_require_js('stripe');
 
 	elgg_extend_view('js/initialize_elgg', 'js/stripe/config');
 	elgg_extend_view('js/elgg', 'js/stripe/cards');
@@ -48,7 +54,7 @@ function stripe_init() {
 	elgg_register_plugin_hook_handler('charge.refunded', 'stripe.events', 'stripe_charge_refunded_event');
 
 	// Stripe Webhooks
-	expose_function('stripe.webhooks', 'stripe_webhook_handler', array(
+	elgg_ws_expose_function('stripe.webhooks', 'stripe_webhook_handler', array(
 		'environment' => array(
 			'type' => 'string',
 			'required' => true,
